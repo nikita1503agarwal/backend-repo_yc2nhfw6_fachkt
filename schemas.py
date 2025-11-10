@@ -38,11 +38,30 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
+# Brew Haven specific schemas
 
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+class Reservation(BaseModel):
+    name: str = Field(..., description="Guest full name")
+    date: str = Field(..., description="Reservation date (YYYY-MM-DD)")
+    time: str = Field(..., description="Reservation time (HH:MM)")
+    guests: int = Field(..., ge=1, le=20, description="Number of guests")
+    phone: Optional[str] = Field(None, description="Contact phone")
+    notes: Optional[str] = Field(None, description="Special requests")
+
+class MenuItem(BaseModel):
+    name: str = Field(...)
+    description: Optional[str] = Field(None)
+    price: float = Field(..., ge=0)
+    category: str = Field(..., description="coffee | tea | bakery")
+    image: Optional[str] = Field(None, description="Image URL")
+
+class OrderItem(BaseModel):
+    name: str
+    quantity: int = Field(..., ge=1)
+    price: float = Field(..., ge=0)
+
+class Order(BaseModel):
+    items: list[OrderItem]
+    total: float = Field(..., ge=0)
+    customer_name: Optional[str] = None
+    customer_email: Optional[str] = None
